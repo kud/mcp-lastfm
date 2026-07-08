@@ -13,9 +13,10 @@
 
 ## Features
 
-- **18 read-only tools** — search, artist, album/track, user, chart, and tag lookups, all backed by the official Last.fm API
-- **Scrobble history at a glance** — pull any user's recent tracks, top artists, top tracks, and top albums over a chosen time period
-- **Global and tag charts** — surface what's trending on Last.fm overall or within a specific tag, e.g. `shoegaze`
+- **41 read-only tools** — search, artist, album/track, user, chart, tag, geo, and library lookups, all backed by the official Last.fm API
+- **Scrobble history at a glance** — pull any user's recent tracks, loved tracks, friends, top artists/tracks/albums/tags, and weekly charts over a chosen time period
+- **Global, tag, and country charts** — surface what's trending on Last.fm overall, within a tag (e.g. `shoegaze`), or by country
+- **Name corrections** — check Last.fm's canonical-name correction data for misspelled artists and tracks
 - **Just an API key** — a single `MCP_LASTFM_API_KEY`, no OAuth flow or session handshake; set an optional `MCP_LASTFM_USERNAME` to default the user tools to your own account
 - **Safe by design** — read-only throughout; no scrobbling, no writes, nothing that touches a user's Last.fm account
 
@@ -77,15 +78,19 @@ Once connected, ask your MCP client things like:
 
 **Search** — `search_artists` · `search_albums` · `search_tracks`
 
-**Artist** — `get_artist` · `get_similar_artists` · `get_artist_top_tracks` · `get_artist_top_albums`
+**Artist** — `get_artist` · `get_similar_artists` · `get_artist_top_tracks` · `get_artist_top_albums` · `get_artist_top_tags` · `correct_artist`
 
-**Album & Track** — `get_album` · `get_track`
+**Album & Track** — `get_album` · `get_album_top_tags` · `get_track` · `get_similar_tracks` · `get_track_top_tags` · `correct_track`
 
-**User** — `get_user_info` · `get_user_recent_tracks` · `get_user_top_artists` · `get_user_top_tracks` · `get_user_top_albums`
+**User** — `get_user_info` · `get_user_recent_tracks` · `get_user_top_artists` · `get_user_top_tracks` · `get_user_top_albums` · `get_user_loved_tracks` · `get_user_friends` · `get_user_personal_tags` · `get_user_top_tags` · `get_user_weekly_album_chart` · `get_user_weekly_artist_chart` · `get_user_weekly_track_chart` · `get_user_weekly_chart_list`
 
-**Chart** — `get_chart_top_artists` · `get_chart_top_tracks`
+**Chart** — `get_chart_top_artists` · `get_chart_top_tracks` · `get_chart_top_tags`
 
-**Tag** — `get_tag_top_artists` · `get_tag_top_tracks`
+**Tag** — `get_tag_top_artists` · `get_tag_top_tracks` · `get_tag_info` · `get_similar_tags` · `get_tag_top_albums` · `get_top_tags` · `get_tag_weekly_chart_list`
+
+**Geo** — `get_geo_top_artists` · `get_geo_top_tracks`
+
+**Library** — `get_library_artists`
 
 ## Development
 
