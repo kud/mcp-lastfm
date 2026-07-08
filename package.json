@@ -1,0 +1,64 @@
+{
+  "name": "@kud/mcp-lastfm",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "MCP server for Last.fm — discover artists, albums and tracks, and browse scrobble history and charts.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "mcp-lastfm": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json && chmod +x dist/index.js",
+    "build:watch": "tsc -p tsconfig.json --watch",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage",
+    "inspect": "npx @modelcontextprotocol/inspector node dist/index.js",
+    "inspect:dev": "npx @modelcontextprotocol/inspector tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prepublishOnly": "npm run clean && npm run build"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "mcp",
+    "lastfm",
+    "last.fm",
+    "model-context-protocol",
+    "music"
+  ],
+  "author": "kud",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kud/mcp-lastfm.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kud/mcp-lastfm/issues"
+  },
+  "homepage": "https://github.com/kud/mcp-lastfm#readme",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/node": "26.1.1",
+    "@vitest/coverage-v8": "4.1.10",
+    "tsx": "4.23.0",
+    "typescript": "7.0.2",
+    "vitest": "4.1.10"
+  }
+}
