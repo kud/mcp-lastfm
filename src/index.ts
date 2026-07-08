@@ -12,6 +12,12 @@ const runningUnderTest = process.env.VITEST === "true"
 
 const API_KEY = process.env["MCP_LASTFM_API_KEY"]
 
+// Optional default account for the user.* tools. When set, "what have I been
+// listening to?" resolves against this username without the caller having to
+// repeat it; an explicit `user` argument still wins, so multi-user lookups of
+// other public profiles keep working.
+const DEFAULT_USER = process.env["MCP_LASTFM_USERNAME"]
+
 const API_BASE = "https://ws.audioscrobbler.com/2.0/"
 const USER_AGENT = "mcp-lastfm/0.1.0 (+https://github.com/kud/mcp-lastfm)"
 
@@ -87,6 +93,19 @@ const pageSchema = z
   .positive()
   .optional()
   .describe("Page number")
+
+const userSchema = z
+  .string()
+  .optional()
+  .describe(
+    "Last.fm username; defaults to MCP_LASTFM_USERNAME when set, so it can be omitted for your own account",
+  )
+
+// Argument wins over the configured default; returns null when neither is present.
+const resolveUser = (user?: string) => user ?? DEFAULT_USER
+
+const NO_USER_ERR =
+  "no username: pass `user`, or set the MCP_LASTFM_USERNAME env var to default to your own account"
 
 // ─── Search ───
 
@@ -451,8 +470,10 @@ type UserInfo = {
   }
 }
 
-export const getUserInfo = async ({ user }: { user: string }) => {
-  const data = await lastfmFetch<UserInfo>("user.getInfo", { user })
+export const getUserInfo = async ({ user }: { user?: string }) => {
+  const username = resolveUser(user)
+  if (!username) return err(NO_USER_ERR)
+  const data = await lastfmFetch<UserInfo>("user.getInfo", { user: username })
   return data ? ok(data.user) : err("failed to fetch user info")
 }
 
@@ -487,15 +508,17 @@ export const getUserRecentTracks = async ({
   to,
   extended,
 }: {
-  user: string
+  user?: string
   limit?: number
   page?: number
   from?: number
   to?: number
   extended?: boolean
 }) => {
+  const username = resolveUser(user)
+  if (!username) return err(NO_USER_ERR)
   const data = await lastfmFetch<UserRecentTracks>("user.getRecentTracks", {
-    user,
+    user: username,
     limit,
     page,
     from,
@@ -532,13 +555,15 @@ export const getUserTopArtists = async ({
   limit,
   page,
 }: {
-  user: string
+  user?: string
   period?: string
   limit?: number
   page?: number
 }) => {
+  const username = resolveUser(user)
+  if (!username) return err(NO_USER_ERR)
   const data = await lastfmFetch<UserTopArtists>("user.getTopArtists", {
-    user,
+    user: username,
     period,
     limit,
     page,
@@ -575,13 +600,15 @@ export const getUserTopTracks = async ({
   limit,
   page,
 }: {
-  user: string
+  user?: string
   period?: string
   limit?: number
   page?: number
 }) => {
+  const username = resolveUser(user)
+  if (!username) return err(NO_USER_ERR)
   const data = await lastfmFetch<UserTopTracks>("user.getTopTracks", {
-    user,
+    user: username,
     period,
     limit,
     page,
@@ -617,13 +644,15 @@ export const getUserTopAlbums = async ({
   limit,
   page,
 }: {
-  user: string
+  user?: string
   period?: string
   limit?: number
   page?: number
 }) => {
+  const username = resolveUser(user)
+  if (!username) return err(NO_USER_ERR)
   const data = await lastfmFetch<UserTopAlbums>("user.getTopAlbums", {
-    user,
+    user: username,
     period,
     limit,
     page,
@@ -962,7 +991,7 @@ server.registerTool(
   {
     description: "Get a Last.fm user's profile info",
     inputSchema: {
-      user: z.string().describe("Last.fm username"),
+      user: userSchema,
     },
   },
   getUserInfo,
@@ -974,7 +1003,7 @@ server.registerTool(
     description:
       "Get a user's recent scrobbles, including the currently playing track",
     inputSchema: {
-      user: z.string().describe("Last.fm username"),
+      user: userSchema,
       limit: limitSchema,
       page: pageSchema,
       from: z
@@ -1001,7 +1030,7 @@ server.registerTool(
   {
     description: "Get a user's most-played artists over a time period",
     inputSchema: {
-      user: z.string().describe("Last.fm username"),
+      user: userSchema,
       period: periodSchema,
       limit: limitSchema,
       page: pageSchema,
@@ -1015,7 +1044,7 @@ server.registerTool(
   {
     description: "Get a user's most-played tracks over a time period",
     inputSchema: {
-      user: z.string().describe("Last.fm username"),
+      user: userSchema,
       period: periodSchema,
       limit: limitSchema,
       page: pageSchema,
@@ -1029,7 +1058,7 @@ server.registerTool(
   {
     description: "Get a user's most-played albums over a time period",
     inputSchema: {
-      user: z.string().describe("Last.fm username"),
+      user: userSchema,
       period: periodSchema,
       limit: limitSchema,
       page: pageSchema,

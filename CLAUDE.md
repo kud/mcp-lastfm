@@ -15,6 +15,11 @@ shared-secret flow) are out of scope.
 Auth: `MCP_LASTFM_API_KEY` — a plain API key query param, no signing or session
 required for these read methods.
 
+Optional `MCP_LASTFM_USERNAME` sets a default account for the `user.*` tools: the
+`user` argument is optional and resolves to `args.user ?? MCP_LASTFM_USERNAME`,
+erroring only when neither is present. An explicit `user` always overrides the
+default, so multi-user lookups of other public profiles still work.
+
 Quirks worth knowing when touching `src/index.ts`:
 
 - All numeric fields in Last.fm's JSON responses are strings (`"1234"`, not `1234`).

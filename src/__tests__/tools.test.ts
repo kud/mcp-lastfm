@@ -349,6 +349,12 @@ describe("getUserInfo", () => {
     const result = await getUserInfo({ user: "kud" })
     expect(text(result)).toContain("Error:")
   })
+
+  it("errors without hitting the API when no user and no default are set", async () => {
+    const result = await getUserInfo({})
+    expect(text(result)).toContain("no username")
+    expect(mockFetch).not.toHaveBeenCalled()
+  })
 })
 
 describe("getUserRecentTracks", () => {
