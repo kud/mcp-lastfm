@@ -43,7 +43,7 @@
   "bugs": {
     "url": "https://github.com/kud/mcp-lastfm/issues"
   },
-  "homepage": "https://github.com/kud/mcp-lastfm#readme",
+  "homepage": "https://kud.io/projects/mcp-lastfm",
   "engines": {
     "node": ">=20.0.0"
   },
